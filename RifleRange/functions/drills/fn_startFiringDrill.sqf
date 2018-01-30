@@ -156,7 +156,7 @@ switch (_drill) do {
 		_targIndex = 0;					// element to select from target array grouped by lane and distance
 		_exposure = 10;					// time a target is raised for
 		_interval = 5;					// time before next target
-		_intervalSwitch = 10;			// time before next target when the player would need to switch stance
+		_intervalSwitch = 12;			// time before next target when the player would need to switch stance or reload
 
 		_hitsPerTarg = -1;				// Number of hits befroe target falls and stops scoring (-1 means it will not fall when hit and will score for the duration of the _exposure time)
 		_hitsRequired = 1; 				// Number of hits required to trigger a score
@@ -186,7 +186,7 @@ switch (_drill) do {
 		_intervalMin = 0.5;				// min time interval
 		_intervalMax = 12;				// max interval
 		_interval = {_intervalMin + random (_intervalMax - _intervalMin)}; // random interval between min and max
-		_intervalSwitch = 10; 			// time before next target when the player would need to switch stance
+		_intervalSwitch = 12; 			// time before next target when the player would need to switch stance or reload
 
 		_hitsPerTarg = -1; 				// Number of hits befroe target falls and stops scoring (-1 means it will not fall when hit until _exposure time expires)
 		_hitsRequired = 1; 				// Number of hits required to trigger a score
