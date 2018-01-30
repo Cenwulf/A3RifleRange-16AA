@@ -1,20 +1,32 @@
-onLoadName = "Rifle Range Test";
-onLoadMission = "Test mission showcasing new rifle range and scoreboard.";
-Author = "Alasdair Scott [16AA]";
+// scripts
+#include "taw_vd\GUI.h"
+#include "gearscript.hpp"
+
+// load screen
+onLoadName = "Readiness Training: Rifle Range";
+onLoadMission = "Location: Limnos";
+Author = "Alasdair Scott [16AA] & Peto [16AA]";
+
+// mission attributes
 disabledAI = 1;
 enableDebugConsole = 1;
-disableChannels[]={1,2,4,5,6};	//disable all default channels except global and group
+disableChannels[]={2,5,6};	//disable command, direct and system channels
+
+// respawn
+respawn = "BASE";
+respawndelay = 4;
 
 class Header
 {
 	gameType = COOP; //game type
 	minPlayers = 1; //min # of players the mission supports
-	maxPlayers = 4; //max # of players the mission supports
+	maxPlayers = 144; //max # of players the mission supports
 };
 
 class CfgFunctions
 {
 	#include "rifleRange\functions.hpp"
+	#include "taw_vd\CfgFunctions.hpp"
 };
 
 class CfgSounds
