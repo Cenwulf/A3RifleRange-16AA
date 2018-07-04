@@ -16,8 +16,10 @@ if (isServer || isDedicated) then { {[_x, [-1, -2, 2]] call bis_fnc_setCuratorVi
 /* 0 = [] spawn compile preprocessFileLineNumbers "scripts\damage.sqf"; // Blow stuff up */
 
 // initiate Scott's rifle range (if included)
+[] spawn RR_fnc_initCommon; // initialise common variable for rifle range script
+
 if (isServer && !isNil "RR_fnc_initRifleRange") then {
-	["ETR2","ETR",8] spawn RR_fnc_initRifleRange; // call this as many times as you want for each individual rifle range on the map
+	["ETR2",["LMG","ETR"],8,3,"AAC Airfield LMG ETR","An 8 lane electric target range (ETR) with targets placed at 100, 200, 300 and 400 meters. Three firing positions placed at 50, 100 and 200 meters distance from the first row of targets. Each set of targets consists of three fig. 11 that can be operated independantly or as one. This range is suitable for a wide array of weapon systems and drills including machineguns, infantry rifles and marksman rifles.",nil,true,getMarkerPos "ETR_Marker_0"] spawn RR_fnc_initRifleRange; // call this as many times as you want for each individual rifle range on the map
 };
 
 //ACRE Setup START

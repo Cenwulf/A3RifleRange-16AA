@@ -36,7 +36,7 @@ waitUntil {
 }; // cannot use sleep command as we need to be able to break out of it if the drill is stopped
 
 // This entire function (fn_runProgram) is run once FOR EACH lane of the firing range, one lane is designated as the primary lane, use "if (_primary) then {WHATEVER};" to execute code that should only be run once per drill, in this case the buzzer sound.
-if (_primary) then {
+if (_primary && missionNamespace getVariable format ["%1_STATES_ARRAY", _rangeID] select _laneIndex select 0) then {
 	[_rangeID,"RR_StartBeep"] remoteExec ["RR_fnc_playHeadsetSound"];
 };
 
@@ -62,11 +62,13 @@ if (_primary) then {
 
 // forEach _program
 {
+	if !(missionNamespace getVariable format ["%1_STATES_ARRAY", _rangeID] select _laneIndex select 0) exitWith {}; // exit if the lane isn't in the started state
+
 	_x params [["_distIndex",0,[0]],["_targIndex",0,[0,[]]],["_maxHits",-1,[0]],["_hitsRequired",1,[0]],["_targScore",1,[0]],["_upTime",0,[0]],["_interval",0,[0]],["_buzzer",false,[true]],["_scoreGroup",-1,[0]],["_fall",true,[true]]];
 
 	private _targGroup = missionNamespace getVariable format ["%1_TARGETS_BY_LANE_AND_DIST",_rangeID] select _laneIndex select _distIndex;
 
-	if (count _targGroup == 0) exitWith {remoteExec ["systemChat", format ["Error: RR_fnc_runProgram & RR_fnc_startFiringDrill - RangeID %1 Lane %2 missing targets from group %3",_rangeID,_laneIndex + 1,_distIndex + 1]]};
+	if (count _targGroup == 0) exitWith {[format ["Error: RR_fnc_runProgram & RR_fnc_startFiringDrill - RangeID %1 Lane %2 missing targets from group %3",_rangeID,_laneIndex + 1,_distIndex + 1]] remoteExec ["systemChat"]};
 
 	_time = _time + _upTime;
 
@@ -75,9 +77,15 @@ if (_primary) then {
 	private _slaveTargArray = [];
 
 	if (typeName _targIndex == typeName []) then {// if an array of target indecies is passed it is assumed that the targets are side by side and intended to act as one target
-		_targ = _targGroup select (_targIndex select 0); // first target assigned as "master"
+
 		{
-			if (_forEachIndex != 0) then { // Every target but the first is assigned as a "slave" target
+			if (_x >= count _targGroup) exitWith { // if any index in _targIndex array is greater than the available number of targets in _targGroup array exit and select the first available target and system chat an error message.
+				_targ = _targGroup select 0;
+				[format ["Error: RR_fnc_runProgram & RR_fnc_startFiringDrill - Drill program %1 is trying to select a target that doesn't exist",missionNamespace getVariable format ["%1_CURRENT_DRILL",_rangeID]]] remoteExec ["systemChat"];
+			};
+			if (_forEachIndex == 0) then {  // first target assigned as "master"
+				_targ = _targGroup select (_targIndex select 0);
+			} else {// every target but the first is assigned as a "slave" target
 				_slaveTarg = _targGroup select _x;
 				_slaveTarg setVariable ["masterTarg", _targ];
 				_slaveTargArray pushBack _slaveTarg;
